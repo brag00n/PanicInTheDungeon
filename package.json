@@ -6,9 +6,23 @@
   "author": "Olivier C",
   "dependencies": {
     "canvas": "^2.7.0",
-    "datauri": "^3.0.0",
+    "datauri": "^1.1.0",
     "express": "^4.17.1",
-    "jsdom": "^16.5.3",
-    "socket.io": "^4.0.1"
-  }
+    "jsdom": "^13.2.0",
+    "socket.io": "^2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brag00n/PaniqueAuDonjon.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brag00n/PaniqueAuDonjon/issues"
+  },
+  "homepage": "https://github.com/brag00n/PaniqueAuDonjon#readme"
 }
