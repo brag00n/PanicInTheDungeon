@@ -1,4 +1,11 @@
+//import Dungeon from "@mikewesthad/dungeon";
+//import Player from "./player.js";
+//import TILES from "./tile-mapping.js";
+//import TilemapVisibility from "./tilemap-visibility.js";
+
 const players = {};
+const _dungeon_width=500;
+const _dungeon_height=500;
 
 const config = {
   type: Phaser.HEADLESS,
@@ -26,8 +33,21 @@ function preload() {
 }
 
 function create() {
+
+  console.log('Create Dungeon Scene')
+
   const self = this;
   this.players = this.physics.add.group();
+
+  self.dungeon= new Dungeon({
+    width: _dungeon_width,
+    height: _dungeon_height,
+    doorPadding: 2,
+    rooms: {
+      width: { min: 7, max: 15, onlyOdd: true },
+      height: { min: 7, max: 15, onlyOdd: true }
+    }
+  });
 
   this.scores = {
     blue: 0,
@@ -49,7 +69,8 @@ function create() {
   });
 
   io.on('connection', function (socket) {
-    console.log('a user connected');
+    console.log('');
+    console.log('User '+socket.id+' is connected');
     // create a new player and add it to our players object
     players[socket.id] = {
       rotation: 0,
@@ -65,6 +86,11 @@ function create() {
     };
     // add player to server
     addPlayer(self, players[socket.id]);
+    // send the dungeon object to the new player
+    io.emit('newDungeon',self.dungeon, self.dungeon.rooms,self.dungeon.tiles,self.dungeon.doors);
+    console.log('Dungeon sent to user ['+socket.id+'] dungeon.width='+self.dungeon.width );
+    //io.emit('newDungeonScene', self.dungeonScene);
+    //console.log('Dungeon sent to user ['+socket.id+'] dungeon.width='+self.dungeon.width );
     // send the players object to the new player
     socket.emit('currentPlayers', players);
     // update all other players of the new player
@@ -75,7 +101,7 @@ function create() {
     socket.emit('updateScore', self.scores);
 
     socket.on('disconnect', function () {
-      console.log('user disconnected');
+      console.log('User ['+socket.id+'] is disconnected');
       // remove player from server
       removePlayer(self, socket.id);
       // remove this player from our players object
@@ -87,6 +113,22 @@ function create() {
     // when a player moves, update the player data
     socket.on('playerInput', function (inputData) {
       handlePlayerInput(self, socket.id, inputData);
+    });
+
+    // when a player ReachedStairs, create a dungeon
+    socket.on('playerReachedStairs', function (inputData) {
+      console.log('player ['+socket.id+'] Reached Stairs');
+      self.dungeon= new Dungeon({
+        width: _dungeon_width,
+        height: _dungeon_height,
+        doorPadding: 2,
+        rooms: {
+          width: { min: 7, max: 15, onlyOdd: true },
+          height: { min: 7, max: 15, onlyOdd: true }
+        }  
+      });
+
+      io.emit('newDungeon',self.dungeon, self.dungeon.rooms,self.dungeon.tiles,self.dungeon.doors);  
     });
   });
 }
@@ -123,6 +165,7 @@ function randomPosition(max) {
 function handlePlayerInput(self, playerId, input) {
   self.players.getChildren().forEach((player) => {
     if (playerId === player.playerId) {
+      //console.log('Update player');
       players[player.playerId].input = input;
     }
   });
