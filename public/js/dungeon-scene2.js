@@ -45,6 +45,8 @@ export default class DungeonScene extends Phaser.Scene {
   
     this.socket.on('newDungeon', (dungeon,rooms,tiles,doors) => {
 
+      console.log('==> New Dungeon recieved');
+
             // Generate a random world with a few extra options:
       //  - Rooms should only have odd number dimensions so that they have a center tile.
       //  - Doors should be at least 2 tiles away from corners, so that we can place a corner tile on
@@ -60,7 +62,6 @@ export default class DungeonScene extends Phaser.Scene {
       });
 
       // log recieved new dungeon
-      console.log('New Dungeon recieved');
 
       //As Object prototype is not transmited into "socket.on" communication, we have to backup it.
       this.prototypeOfRoom=Object.getPrototypeOf(self.dungeon.rooms[0]);
@@ -75,6 +76,7 @@ export default class DungeonScene extends Phaser.Scene {
     });
 
     this.socket.on('currentPlayers', function (players) {
+      console.log('==> New Players recieved');
       Object.keys(players).forEach(function (id) {
         if (players[id].playerId === self.socket.id) {
           displayPlayers(self, players[id], 'curentPlayer');
@@ -85,10 +87,12 @@ export default class DungeonScene extends Phaser.Scene {
     });
   
     this.socket.on('newPlayer', function (playerInfo) {
+      console.log('==> New Player recieved: '+playerInfo.playerId);
       displayPlayers(self, playerInfo, 'otherPlayer');
     });
   
     this.socket.on('disconnect', function (playerId) {
+      console.log('==> Disconnect recieved ');
       self.players.getChildren().forEach(function (player) {
         if (playerId === player.playerId) {
           player.destroy();
@@ -97,6 +101,7 @@ export default class DungeonScene extends Phaser.Scene {
     });
   
     this.socket.on('playerUpdates', function (players) {
+      //console.log('==> Player Updates recieved ');
       Object.keys(players).forEach(function (id) {
         self.players.getChildren().forEach(function (player) {
           if (players[id].playerId === player.playerId) {
@@ -107,11 +112,13 @@ export default class DungeonScene extends Phaser.Scene {
     });
   
     this.socket.on('updateScore', function (scores) {
+      console.log('==> Update Score recieved ');
       self.blueScoreText.setText('Blue: ' + scores.blue);
       self.redScoreText.setText('Red: ' + scores.red);
     });
   
     this.socket.on('starLocation', function (starLocation) {
+      console.log('==> Update star Location recieved ');
       if (!self.star) {
         self.star = self.add.image(starLocation.x, starLocation.y, 'star');
       } else {
@@ -227,6 +234,7 @@ export default class DungeonScene extends Phaser.Scene {
     self.stuffLayer.setCollisionByExclusion([-1, 6, 7, 8, 26]);
 
     self.stuffLayer.setTileIndexCallback(TILES.STAIRS, () => {
+      console.log('--> Player Reached Stairs');
       self.stuffLayer.setTileIndexCallback(TILES.STAIRS, null);
       self.hasPlayerReachedStairs = true;
       self.player.freeze();
@@ -288,7 +296,7 @@ export default class DungeonScene extends Phaser.Scene {
     //console.log('START this.update');
     if (this.dungeon==null) return;
     if (this.hasPlayerReachedStairs) {
-      console.log('playerReachedStairs');
+      console.log('##> emit playerReachedStairs');
       this.socket.emit('playerReachedStairs');
       this.hasPlayerReachedStairs=false;
       return;
@@ -304,6 +312,7 @@ export default class DungeonScene extends Phaser.Scene {
     const playerRoom = this.dungeon.getRoomAt(playerTileX, playerTileY);
 
     this.tilemapVisibility.setActiveRoom(playerRoom);
+    //console.log('##> emit playerInput');
     this.socket.emit('playerInput', { x: this.player.x , y: this.player.y });
     //console.log('END   this.update');
   }
