@@ -6,6 +6,9 @@ var config = {
   width: 800,
   height: 600,
   pixelArt: true,
+  audio: {
+    noAudio: true
+  },
   scene: DungeonScene,
   //scene: {
   //  preload: preload,
