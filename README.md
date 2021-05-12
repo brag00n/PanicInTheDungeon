@@ -1,6 +1,6 @@
 # Node PaniqueAuDonjon App
 
-A Node app built with PHaser. For demonstration purposes and a tutorial.
+A Node app built with Phaser. For demonstration purposes and a tutorial.
 
 Node provides the RESTful API. Phaser provides the frontend and accesses the API.
 
@@ -18,6 +18,13 @@ Node provides the RESTful API. Phaser provides the frontend and accesses the API
 
 ## Tutorial Series
 
-This repo corresponds to the Node PaniqueAuDonjon Tutorial
+This repo corresponds to the Node PaniqueAuDonjon Tutorial using the links:
+ * https://gamedevacademy.org/phaser-3-tutorial/
+ * https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-3-procedural-dungeon-3bc19b841cd
+ * https://www.npmjs.com/package/@mikewesthad/dungeon
+ * https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-1/
+ * https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-2/
+ * https://opengameart.org/content/16x16-indoor-rpg-tileset-the-baseline
+
 
 Happy PaniqueAuDonjon-ing!
