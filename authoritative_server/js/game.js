@@ -64,13 +64,15 @@ function create() {
       self.scores.blue += 10;
     }
     self.star.setPosition(randomPosition(700), randomPosition(500));
+    console.log('##> updateScore playerUpdates to user ['+socket.id+']');
     io.emit('updateScore', self.scores);
+    console.log('##> starLocation playerUpdates to user ['+socket.id+']');
     io.emit('starLocation', { x: self.star.x, y: self.star.y });
   });
 
   io.on('connection', function (socket) {
     console.log('');
-    console.log('User '+socket.id+' is connected');
+    console.log('==>#connection# New Players ['+socket.id+'] recieved');
     // create a new player and add it to our players object
     players[socket.id] = {
       rotation: 0,
@@ -87,37 +89,43 @@ function create() {
     // add player to server
     addPlayer(self, players[socket.id]);
     // send the dungeon object to the new player
+    console.log('##> emit newDungeon to user ['+socket.id+']');
     io.emit('newDungeon',self.dungeon, self.dungeon.rooms,self.dungeon.tiles,self.dungeon.doors);
-    console.log('Dungeon sent to user ['+socket.id+'] dungeon.width='+self.dungeon.width );
     //io.emit('newDungeonScene', self.dungeonScene);
     //console.log('Dungeon sent to user ['+socket.id+'] dungeon.width='+self.dungeon.width );
     // send the players object to the new player
+    console.log('##> emit currentPlayers to user ['+socket.id+']');
     socket.emit('currentPlayers', players);
     // update all other players of the new player
+    console.log('##> emit newPlayer to user ['+socket.id+']');
     socket.broadcast.emit('newPlayer', players[socket.id]);
     // send the star object to the new player
+    console.log('##> emit starLocation to user ['+socket.id+']');
     socket.emit('starLocation', { x: self.star.x, y: self.star.y });
     // send the current scores
+    console.log('##> emit updateScore to user ['+socket.id+']');
     socket.emit('updateScore', self.scores);
 
     socket.on('disconnect', function () {
-      console.log('User ['+socket.id+'] is disconnected');
+      console.log('==>#disconnect# Players ['+socket.id+'] diconnected recieved');
       // remove player from server
       removePlayer(self, socket.id);
       // remove this player from our players object
       delete players[socket.id];
       // emit a message to all players to remove this player
+      console.log('##> emit disconnect to user ['+socket.id+']');
       io.emit('disconnect', socket.id);
     });
 
     // when a player moves, update the player data
     socket.on('playerInput', function (inputData) {
+      //console.log('==>#playerInput# Players ['+socket.id+'] sent input');
       handlePlayerInput(self, socket.id, inputData);
     });
 
     // when a player ReachedStairs, create a dungeon
     socket.on('playerReachedStairs', function (inputData) {
-      console.log('player ['+socket.id+'] Reached Stairs');
+      console.log('==>#playerReachedStairs# Players ['+socket.id+'] Reached Stairs');
       self.dungeon= new Dungeon({
         width: _dungeon_width,
         height: _dungeon_height,
@@ -128,6 +136,7 @@ function create() {
         }  
       });
 
+      console.log('##> emit newDungeon to user ['+socket.id+']');
       io.emit('newDungeon',self.dungeon, self.dungeon.rooms,self.dungeon.tiles,self.dungeon.doors);  
     });
   });
@@ -155,6 +164,7 @@ function update() {
     players[player.playerId].rotation = player.rotation;
   });
   this.physics.world.wrap(this.players, 5);
+  //console.log('##> emit playerUpdates to user ['+socket.id+']');
   io.emit('playerUpdates', players);
 }
 
