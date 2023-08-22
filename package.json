@@ -1,5 +1,5 @@
 {
-  "name": "PaniqueAuDonjon",
+  "name": "PanicInTheDungeon",
   "version": "0.0.1",
   "description": "Jeu de Donjon avec Phaser et JavaScript",
   "main": "server.js",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brag00n/PaniqueAuDonjon.git"
+    "url": "git+https://github.com/brag00n/PanicInTheDungeon.git"
   },
   "keywords": [],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/brag00n/PaniqueAuDonjon/issues"
+    "url": "https://github.com/brag00n/PanicInTheDungeon/issues"
   },
-  "homepage": "https://github.com/brag00n/PaniqueAuDonjon#readme"
+  "homepage": "https://github.com/brag00n/PanicInTheDungeon#readme"
 }
